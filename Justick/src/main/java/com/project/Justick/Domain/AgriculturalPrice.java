@@ -4,18 +4,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@DiscriminatorColumn(name = "dtype")
+@MappedSuperclass
 @Getter @Setter
 public abstract class AgriculturalPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id; // id
+    private Long id;
 
-    private LocalDate date; // 날짜
-    private boolean rating; // 등급
-    private int averagePrice; // 평균가격
+    @Column(name = "year_value")
+    private int year;
+
+    @Column(name = "month_value")
+    private int month;
+
+    @Column(name = "day_value")
+    private int day;
+
+    private int averagePrice;
+    private int intake;
+
+    @Column(columnDefinition = "varchar(20)")
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 }
+

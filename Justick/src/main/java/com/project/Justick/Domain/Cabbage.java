@@ -1,10 +1,10 @@
 package com.project.Justick.Domain;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter@Setter
-public class CabbagePrice extends AgriculturalPrice{
+public class Cabbage extends AgriculturalPrice{
 }
