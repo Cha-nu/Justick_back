@@ -23,6 +23,7 @@ public abstract class AgriculturalPrice {
 
     private int averagePrice;
     private int intake;
+    private int gap;
 
     @Column(columnDefinition = "varchar(20)")
     @Enumerated(EnumType.STRING)

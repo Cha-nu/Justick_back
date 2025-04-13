@@ -1,17 +1,18 @@
+server:
+  port: 2022
+
 spring:
   datasource:
-    url: jdbc:mysql://awseb-e-e2favd5mvj-stack-awsebrdsdatabase-dmz6qtmiid8y.cvsoe0gsek5u.ap-northeast-2.rds.amazonaws.com:3306/chan
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: chan
-    password: 25647890
+    url: jdbc:mysql://localhost:3306/justick
+    username: justick_user
+    password: 12345
   jpa:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
-  server:
-    port: 5000
