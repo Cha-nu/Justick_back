@@ -1,9 +1,10 @@
 package com.project.Justick.Controller;
 
-import com.project.Justick.Domain.CabbagePredict;
+
+import com.project.Justick.DTO.OnionRequest;
 import com.project.Justick.Domain.Grade;
-import com.project.Justick.DTO.CabbageRequest;
-import com.project.Justick.Service.CabbagePredictService;
+import com.project.Justick.Domain.OnionPredict;
+import com.project.Justick.Service.OnionPredictService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,27 +12,27 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/cabbage-predict")
-public class CabbagePredictController {
+@RequestMapping("/api/onion-predict")
+public class OnionPredictController {
 
-    private final CabbagePredictService service;
+    private final OnionPredictService service;
 
-    public CabbagePredictController(CabbagePredictService service) {
+    public OnionPredictController(OnionPredictService service) {
         this.service = service;
     }
 
     @GetMapping("/high-prices")
-    public List<CabbagePredict> getHighPredicts() {
+    public List<OnionPredict> getHighPredicts() {
         return service.findRecent20DaysWithForecast(Grade.HIGH);
     }
 
     @GetMapping("/special-prices")
-    public List<CabbagePredict> getSpecialPredicts() {
+    public List<OnionPredict> getSpecialPredicts() {
         return service.findRecent20DaysWithForecast(Grade.SPECIAL);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<CabbageRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<OnionRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
     }

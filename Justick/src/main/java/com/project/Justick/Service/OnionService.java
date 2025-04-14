@@ -1,9 +1,9 @@
 package com.project.Justick.Service;
 
-import com.project.Justick.Domain.Cabbage;
-import com.project.Justick.DTO.CabbageRequest;
+import com.project.Justick.DTO.OnionRequest;
 import com.project.Justick.Domain.Grade;
-import com.project.Justick.Repository.CabbageRepository;
+import com.project.Justick.Domain.Onion;
+import com.project.Justick.Repository.OnionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,15 +13,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CabbageService {
-    private final CabbageRepository repository;
+public class OnionService {
+    private final OnionRepository repository;
 
-    public CabbageService(CabbageRepository repository) {
+    public OnionService(OnionRepository repository) {
         this.repository = repository;
     }
 
-    public List<Cabbage> findRecent15DaysByGrade(Grade grade) {
-        Cabbage latest = repository.findLatestByGrade(grade);
+    public List<Onion> findRecent15DaysByGrade(Grade grade) {
+        Onion latest = repository.findLatestByGrade(grade);
         if (latest == null) return List.of();
 
         LocalDate today = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
@@ -35,7 +35,7 @@ public class CabbageService {
     }
 
     public Map<String, Map<String, Integer>> getWeeklyAverages(Grade grade) {
-        List<Cabbage> all = repository.findByGrade(grade);
+        List<Onion> all = repository.findByGrade(grade);
 
         Map<String, Map<String, Integer>> result = all.stream()
                 .filter(c -> c.getAveragePrice() > 0 && c.getIntake() > 0)
@@ -71,7 +71,7 @@ public class CabbageService {
 
 
     public Map<String, Map<String, Integer>> getMonthlyAverages(Grade grade) {
-        List<Cabbage> all = repository.findByGrade(grade);
+        List<Onion> all = repository.findByGrade(grade);
 
         Map<String, Map<String, Integer>> fullResult = all.stream()
                 .filter(c -> c.getAveragePrice() > 0 && c.getIntake() > 0)
@@ -79,8 +79,8 @@ public class CabbageService {
                         c -> String.format("%04d-%02d", c.getYear(), c.getMonth()),
                         TreeMap::new, // 자동으로 날짜순 정렬됨
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
-                            int avgPrice = (int) list.stream().mapToInt(Cabbage::getAveragePrice).average().orElse(0);
-                            int avgIntake = (int) list.stream().mapToInt(Cabbage::getIntake).average().orElse(0);
+                            int avgPrice = (int) list.stream().mapToInt(Onion::getAveragePrice).average().orElse(0);
+                            int avgIntake = (int) list.stream().mapToInt(Onion::getIntake).average().orElse(0);
                             Map<String, Integer> m = new HashMap<>();
                             m.put("averagePrice", avgPrice);
                             m.put("intake", avgIntake);
@@ -101,13 +101,13 @@ public class CabbageService {
 
 
     @Transactional
-    public void saveAll(List<CabbageRequest> requests) {
-        List<Cabbage> list = requests.stream().map(this::toEntity).toList();
+    public void saveAll(List<OnionRequest> requests) {
+        List<Onion> list = requests.stream().map(this::toEntity).toList();
         repository.saveAll(list);
     }
 
-    private Cabbage toEntity(CabbageRequest request) {
-        Cabbage entity = new Cabbage();
+    private Onion toEntity(OnionRequest request) {
+        Onion entity = new Onion();
         entity.setYear(request.getYear());
         entity.setMonth(request.getMonth());
         entity.setDay(request.getDay());
@@ -120,7 +120,7 @@ public class CabbageService {
 
 
     @Transactional
-    public void saveOneAndDeleteOldest(CabbageRequest request) {
+    public void saveOneAndDeleteOldest(OnionRequest request) {
         long count = repository.countByGrade(request.getGrade());
         if (count >= 28) {
             repository.deleteOldestByGrade(Grade.valueOf(request.getGrade()));

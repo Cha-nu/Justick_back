@@ -1,9 +1,9 @@
 package com.project.Justick.Controller;
 
-import com.project.Justick.Domain.CabbagePredict;
+import com.project.Justick.DTO.OnionRequest;
 import com.project.Justick.Domain.Grade;
-import com.project.Justick.DTO.CabbageRequest;
-import com.project.Justick.Service.CabbagePredictService;
+import com.project.Justick.Domain.Onion;
+import com.project.Justick.Service.OnionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,37 +11,36 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/cabbage-predict")
-public class CabbagePredictController {
+@RequestMapping("/api/onion")
+public class OnionController {
 
-    private final CabbagePredictService service;
+    private final OnionService service;
 
-    public CabbagePredictController(CabbagePredictService service) {
+    public OnionController(OnionService service) {
         this.service = service;
     }
 
     @GetMapping("/high-prices")
-    public List<CabbagePredict> getHighPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.HIGH);
+    public List<Onion> getHighOnionPrices() {
+        return service.findRecent15DaysByGrade(Grade.HIGH);
     }
 
     @GetMapping("/special-prices")
-    public List<CabbagePredict> getSpecialPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.SPECIAL);
+    public List<Onion> getSpecialOnionPrices() {
+        return service.findRecent15DaysByGrade(Grade.SPECIAL);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<CabbageRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<OnionRequest> requests) {
         service.saveAll(requests);
-        return ResponseEntity.ok("Prediction batch insert complete.");
+        return ResponseEntity.ok("Batch insert complete.");
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable Long id) {
-        service.deleteById(id);
-        return ResponseEntity.ok("Prediction deleted with id: " + id);
+    @PostMapping
+    public ResponseEntity<String> saveOne(@RequestBody OnionRequest request) {
+        service.saveOneAndDeleteOldest(request);
+        return ResponseEntity.ok("Saved newest and deleted oldest.");
     }
-
     @GetMapping("/high-weekly")
     public Map<String, Map<String, Integer>> getHighWeeklyAvg() {
         return service.getWeeklyAverages(Grade.HIGH);
@@ -61,4 +60,5 @@ public class CabbagePredictController {
     public Map<String, Map<String, Integer>> getSpecialMonthlyAvg() {
         return service.getMonthlyAverages(Grade.SPECIAL);
     }
+
 }

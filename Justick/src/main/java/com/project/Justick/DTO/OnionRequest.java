@@ -4,5 +4,5 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class CabbageRequest extends AgriculturalRequest {
+public class OnionRequest extends AgriculturalRequest {
 }

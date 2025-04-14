@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 public abstract class AgriculturalPrice {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "year_value")

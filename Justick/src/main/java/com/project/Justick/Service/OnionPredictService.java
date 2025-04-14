@@ -1,9 +1,10 @@
 package com.project.Justick.Service;
 
-import com.project.Justick.DTO.CabbageRequest;
-import com.project.Justick.Domain.CabbagePredict;
+
+import com.project.Justick.DTO.OnionRequest;
 import com.project.Justick.Domain.Grade;
-import com.project.Justick.Repository.CabbagePredictRepository;
+import com.project.Justick.Domain.OnionPredict;
+import com.project.Justick.Repository.OnionPredictRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,24 +14,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CabbagePredictService {
+public class OnionPredictService {
 
-    private final CabbagePredictRepository repo;
+    private final OnionPredictRepository repo;
 
-    public CabbagePredictService(CabbagePredictRepository repo) {
+    public OnionPredictService(OnionPredictRepository repo) {
         this.repo = repo;
     }
 
     @Transactional
-    public void saveAll(List<CabbageRequest> requests) {
-        List<CabbagePredict> entities = requests.stream()
+    public void saveAll(List<OnionRequest> requests) {
+        List<OnionPredict> entities = requests.stream()
                 .map(this::toEntity)
                 .toList();
         repo.saveAll(entities);
     }
 
-    private CabbagePredict toEntity(CabbageRequest req) {
-        CabbagePredict e = new CabbagePredict();
+    private OnionPredict toEntity(OnionRequest req) {
+        OnionPredict e = new OnionPredict();
         e.setYear(req.getYear());
         e.setMonth(req.getMonth());
         e.setDay(req.getDay());
@@ -47,7 +48,7 @@ public class CabbagePredictService {
     }
 
     public Map<String, Map<String, Integer>> getWeeklyAverages(Grade grade) {
-        List<CabbagePredict> all = repo.findByGrade(grade);
+        List<OnionPredict> all = repo.findByGrade(grade);
 
         Map<String, Map<String, Integer>> grouped = all.stream()
                 .filter(c -> c.getAveragePrice() > 0 && c.getIntake() > 0)
@@ -59,8 +60,8 @@ public class CabbagePredictService {
                         },
                         TreeMap::new,
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
-                            int avgPrice = (int) list.stream().mapToInt(CabbagePredict::getAveragePrice).average().orElse(0);
-                            int avgIntake = (int) list.stream().mapToInt(CabbagePredict::getIntake).average().orElse(0);
+                            int avgPrice = (int) list.stream().mapToInt(OnionPredict::getAveragePrice).average().orElse(0);
+                            int avgIntake = (int) list.stream().mapToInt(OnionPredict::getIntake).average().orElse(0);
                             Map<String, Integer> m = new HashMap<>();
                             m.put("averagePrice", avgPrice);
                             m.put("intake", avgIntake);
@@ -80,7 +81,7 @@ public class CabbagePredictService {
 
 
     public Map<String, Map<String, Integer>> getMonthlyAverages(Grade grade) {
-        List<CabbagePredict> all = repo.findByGrade(grade);
+        List<OnionPredict> all = repo.findByGrade(grade);
 
         Map<String, Map<String, Integer>> grouped = all.stream()
                 .filter(c -> c.getAveragePrice() > 0 && c.getIntake() > 0)
@@ -88,8 +89,8 @@ public class CabbagePredictService {
                         c -> String.format("%04d-%02d", c.getYear(), c.getMonth()),
                         TreeMap::new,
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
-                            int avgPrice = (int) list.stream().mapToInt(CabbagePredict::getAveragePrice).average().orElse(0);
-                            int avgIntake = (int) list.stream().mapToInt(CabbagePredict::getIntake).average().orElse(0);
+                            int avgPrice = (int) list.stream().mapToInt(OnionPredict::getAveragePrice).average().orElse(0);
+                            int avgIntake = (int) list.stream().mapToInt(OnionPredict::getIntake).average().orElse(0);
                             Map<String, Integer> m = new HashMap<>();
                             m.put("averagePrice", avgPrice);
                             m.put("intake", avgIntake);
@@ -107,8 +108,8 @@ public class CabbagePredictService {
                 ));
     }
 
-    public List<CabbagePredict> findRecent20DaysWithForecast(Grade grade) {
-        CabbagePredict latest = repo.findLatestByGrade(grade);
+    public List<OnionPredict> findRecent20DaysWithForecast(Grade grade) {
+        OnionPredict latest = repo.findLatestByGrade(grade);
         if (latest == null) return List.of();
 
         LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
