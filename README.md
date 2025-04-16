@@ -6,9 +6,5 @@ Oracle JAVA 21
 node.js: 22.14  
 npm version: 11.1.0  
 
-#### front start command  
-cd ./fronted  
-npm run dev  
-
 #### Api
 (http://justick-env.eba-bahjbyqe.ap-northeast-2.elasticbeanstalk.com/)
