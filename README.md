@@ -6,7 +6,7 @@ Oracle JAVA 21
 node.js: 22.14  
 npm version: 11.1.0  
 
-#### Api
+#### Backend url
 (http://211.211.151.18:2022/)
 
 #### Front
