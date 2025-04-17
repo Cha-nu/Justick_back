@@ -7,4 +7,7 @@ node.js: 22.14
 npm version: 11.1.0  
 
 #### Api
-(http://justick-env.eba-bahjbyqe.ap-northeast-2.elasticbeanstalk.com/)
+(http://211.211.151.18:2022/)
+
+#### Front
+https://github.com/Cha-nu/Justick_front/edit/main/README.md
