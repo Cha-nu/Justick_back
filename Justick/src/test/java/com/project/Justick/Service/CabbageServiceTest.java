@@ -1,8 +1,9 @@
 package com.project.Justick.Service;
 
-import com.project.Justick.Domain.Cabbage;
+import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
-import com.project.Justick.Repository.CabbageRepository;
+import com.project.Justick.Repository.Cabbage.CabbageRepository;
+import com.project.Justick.Service.Cabbage.CabbageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
