@@ -22,4 +22,5 @@ public abstract class AgriculturalRetail {
     private int day;
 
     private int averagePrice;
+    private int gap;
 }
