@@ -105,8 +105,15 @@ public class CabbageService {
         entity.setDay(request.getDay());
         entity.setAveragePrice(request.getAveragePrice());
         entity.setIntake(request.getIntake());
-        entity.setGap(request.getGap());
         entity.setGrade(Grade.valueOf(request.getGrade()));
+        Optional<Cabbage> prev = repository.findByGradeAndYearAndMonthAndDay(
+                entity.getGrade(),
+                entity.getYear(),
+                entity.getMonth(),
+                entity.getDay() - 1
+        );
+        int prevPrice = prev.map(Cabbage::getAveragePrice).orElse(0);
+        entity.setGap(entity.getAveragePrice() - prevPrice);
         return entity;
     }
 

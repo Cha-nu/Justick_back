@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CabbageRepository extends JpaRepository<Cabbage, Long> {
     List<Cabbage> findByGrade(Grade grade);
@@ -23,4 +24,6 @@ public interface CabbageRepository extends JpaRepository<Cabbage, Long> {
     // Save a single Cabbage entry and delete the oldest one
     @Query("SELECT COUNT(c) FROM Cabbage c WHERE c.grade = :grade")
     long countByGrade(@Param("grade") String grade);
+
+    Optional<Cabbage> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
 }

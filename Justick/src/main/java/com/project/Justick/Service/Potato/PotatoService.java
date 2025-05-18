@@ -108,7 +108,14 @@ public class PotatoService {
         entity.setDay(request.getDay());
         entity.setAveragePrice(request.getAveragePrice());
         entity.setIntake(request.getIntake());
-        entity.setGap(request.getGap());
+        Optional<Potato> prev = repository.findByGradeAndYearAndMonthAndDay(
+                entity.getGrade(),
+                entity.getYear(),
+                entity.getMonth(),
+                entity.getDay() - 1
+        );
+        int prevPrice = prev.map(Potato::getAveragePrice).orElse(0);
+        entity.setGap(entity.getAveragePrice() - prevPrice);
         entity.setGrade(Grade.valueOf(request.getGrade()));
         return entity;
     }

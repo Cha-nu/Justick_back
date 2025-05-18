@@ -8,4 +8,5 @@ import lombok.Setter;
 @Entity
 @Getter@Setter
 public class Radish extends AgriculturalPrice {
+    private int gap;
 }

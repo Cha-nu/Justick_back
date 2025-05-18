@@ -38,7 +38,6 @@ public class OnionPredictService {
         e.setDay(req.getDay());
         e.setAveragePrice(req.getAveragePrice());
         e.setIntake(req.getIntake());
-        e.setGap(req.getGap());
         e.setGrade(Grade.valueOf(req.getGrade().toUpperCase()));
         return e;
     }

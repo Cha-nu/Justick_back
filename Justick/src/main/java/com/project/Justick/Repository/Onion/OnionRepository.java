@@ -1,5 +1,6 @@
 package com.project.Justick.Repository.Onion;
 
+import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.Onion;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OnionRepository extends JpaRepository<Onion, Long> {
     List<Onion> findByGrade(Grade grade);
@@ -22,4 +24,6 @@ public interface OnionRepository extends JpaRepository<Onion, Long> {
 
     @Query("SELECT COUNT(c) FROM Onion c WHERE c.grade = :grade")
     long countByGrade(@Param("grade") String grade);
+
+    Optional<Onion> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
 }

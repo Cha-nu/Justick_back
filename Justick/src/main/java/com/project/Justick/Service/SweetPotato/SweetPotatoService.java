@@ -1,6 +1,7 @@
 package com.project.Justick.Service.SweetPotato;
 
 import com.project.Justick.DTO.SweetPotato.SweetPotatoRequest;
+import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.SweetPotato.SweetPotato;
 import com.project.Justick.Repository.SweetPotato.SweetPotatoRepository;
@@ -105,7 +106,14 @@ public class SweetPotatoService {
         entity.setDay(request.getDay());
         entity.setAveragePrice(request.getAveragePrice());
         entity.setIntake(request.getIntake());
-        entity.setGap(request.getGap());
+        Optional<SweetPotato> prev = repository.findByGradeAndYearAndMonthAndDay(
+                entity.getGrade(),
+                entity.getYear(),
+                entity.getMonth(),
+                entity.getDay() - 1
+        );
+        int prevPrice = prev.map(SweetPotato::getAveragePrice).orElse(0);
+        entity.setGap(entity.getAveragePrice() - prevPrice);
         entity.setGrade(Grade.valueOf(request.getGrade()));
         return entity;
     }

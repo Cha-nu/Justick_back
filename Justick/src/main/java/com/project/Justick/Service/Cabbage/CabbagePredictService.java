@@ -1,6 +1,7 @@
 package com.project.Justick.Service.Cabbage;
 
 import com.project.Justick.DTO.Cabbage.CabbageRequest;
+import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Cabbage.CabbagePredict;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Repository.Cabbage.CabbagePredictRepository;
@@ -36,7 +37,6 @@ public class CabbagePredictService {
         e.setDay(req.getDay());
         e.setAveragePrice(req.getAveragePrice());
         e.setIntake(req.getIntake());
-        e.setGap(req.getGap());
         e.setGrade(Grade.valueOf(req.getGrade().toUpperCase()));
         return e;
     }

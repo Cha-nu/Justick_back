@@ -1,6 +1,7 @@
 package com.project.Justick.Service.Onion;
 
 import com.project.Justick.DTO.Onion.OnionRequest;
+import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.Onion;
 import com.project.Justick.Repository.Onion.OnionRepository;
@@ -108,7 +109,14 @@ public class OnionService {
         entity.setDay(request.getDay());
         entity.setAveragePrice(request.getAveragePrice());
         entity.setIntake(request.getIntake());
-        entity.setGap(request.getGap());
+        Optional<Onion> prev = repository.findByGradeAndYearAndMonthAndDay(
+                entity.getGrade(),
+                entity.getYear(),
+                entity.getMonth(),
+                entity.getDay() - 1
+        );
+        int prevPrice = prev.map(Onion::getAveragePrice).orElse(0);
+        entity.setGap(entity.getAveragePrice() - prevPrice);
         entity.setGrade(Grade.valueOf(request.getGrade()));
         return entity;
     }
