@@ -1,6 +1,5 @@
 package com.project.Justick.Repository.Tomato;
 
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Tomato.Tomato;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +23,7 @@ public interface TomatoRepository extends JpaRepository<Tomato, Long> {
 
     // Save a single Tomato entry and delete the oldest one
     @Query("SELECT COUNT(c) FROM Tomato c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 
     Optional<Tomato> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
 }

@@ -6,4 +6,5 @@ import lombok.Setter;
 
 @Getter @Setter
 public class TomatoRequest extends AgriculturalRequest {
+    private int intake;
 }

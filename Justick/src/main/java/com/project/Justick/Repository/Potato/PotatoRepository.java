@@ -1,8 +1,6 @@
 package com.project.Justick.Repository.Potato;
 
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
-import com.project.Justick.Domain.Onion.Onion;
 import com.project.Justick.Domain.Potato.Potato;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,7 +23,7 @@ public interface PotatoRepository extends JpaRepository<Potato, Long> {
 
     // Save a single Cabbage entry and delete the oldest one
     @Query("SELECT COUNT(c) FROM Potato c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 
     Optional<Potato> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
 }

@@ -10,5 +10,4 @@ public abstract class RetailRequest {
     private int month;
     private int day;
     private int averagePrice;
-    private int gap;
 }

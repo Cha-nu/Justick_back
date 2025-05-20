@@ -23,6 +23,21 @@ public class OnionRetailService {
     public OnionRetail addOnionRetail(OnionRetail newData) {
         List<OnionRetail> all = onionRetailRepository.findAll();
 
+        OnionRetail prev = all.stream()
+                .max(Comparator.comparing(OnionRetail::getYear)
+                        .thenComparing(OnionRetail::getMonth)
+                        .thenComparing(OnionRetail::getDay))
+                .orElse(null);
+
+        // gap 계산
+        if (prev != null) {
+            int gap = newData.getAveragePrice() - prev.getAveragePrice();
+            newData.setGap(gap);
+        } else {
+            newData.setGap(0); // 첫 데이터는 gap 0
+        }
+
+
         // 만약 데이터가 28개 이상이면 가장 오래된 1개 삭제
         if (all.size() >= 28) {
             OnionRetail oldest = all.stream()
@@ -31,9 +46,7 @@ public class OnionRetailService {
                             .thenComparing(OnionRetail::getDay))
                     .orElse(null);
 
-            if (oldest != null) {
-                onionRetailRepository.delete(oldest);
-            }
+            onionRetailRepository.delete(oldest);
         }
 
         return onionRetailRepository.save(newData);

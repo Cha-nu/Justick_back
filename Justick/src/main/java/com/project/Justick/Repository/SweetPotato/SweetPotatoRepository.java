@@ -1,8 +1,6 @@
 package com.project.Justick.Repository.SweetPotato;
 
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
-import com.project.Justick.Domain.Onion.Onion;
 import com.project.Justick.Domain.SweetPotato.SweetPotato;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,7 +23,7 @@ public interface SweetPotatoRepository extends JpaRepository<SweetPotato, Long> 
 
     // Save a single Cabbage entry and delete the oldest one
     @Query("SELECT COUNT(c) FROM SweetPotato c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 
     Optional<SweetPotato> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
 }

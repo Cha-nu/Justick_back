@@ -23,7 +23,7 @@ public interface CabbageRepository extends JpaRepository<Cabbage, Long> {
 
     // Save a single Cabbage entry and delete the oldest one
     @Query("SELECT COUNT(c) FROM Cabbage c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 
     Optional<Cabbage> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
 }

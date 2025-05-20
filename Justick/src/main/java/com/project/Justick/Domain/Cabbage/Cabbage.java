@@ -9,4 +9,5 @@ import lombok.Setter;
 @Getter@Setter
 public class Cabbage extends AgriculturalPrice {
     private int gap;
+    private int intake;
 }

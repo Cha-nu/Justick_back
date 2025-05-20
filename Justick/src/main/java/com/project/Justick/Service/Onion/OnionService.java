@@ -1,7 +1,6 @@
 package com.project.Justick.Service.Onion;
 
 import com.project.Justick.DTO.Onion.OnionRequest;
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.Onion;
 import com.project.Justick.Repository.Onion.OnionRepository;
@@ -125,7 +124,7 @@ public class OnionService {
     // 최신 데이터 저장 및 오래된 데이터 삭제
     @Transactional
     public void saveOneAndDeleteOldest(OnionRequest request) {
-        long count = repository.countByGrade(request.getGrade());
+        long count = repository.countByGrade(Grade.valueOf(request.getGrade()));
         if (count >= 28) {
             repository.deleteOldestByGrade(Grade.valueOf(request.getGrade()));
         }

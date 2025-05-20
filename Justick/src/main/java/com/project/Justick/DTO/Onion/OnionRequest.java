@@ -6,4 +6,5 @@ import lombok.Setter;
 
 @Getter @Setter
 public class OnionRequest extends AgriculturalRequest {
+    private int intake;
 }

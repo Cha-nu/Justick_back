@@ -120,7 +120,7 @@ public class CabbageService {
 
     @Transactional
     public void saveOneAndDeleteOldest(CabbageRequest request) {
-        long count = repository.countByGrade(request.getGrade());
+        long count = repository.countByGrade(Grade.valueOf(request.getGrade()));
         if (count >= 28) {
             repository.deleteOldestByGrade(Grade.valueOf(request.getGrade()));
         }

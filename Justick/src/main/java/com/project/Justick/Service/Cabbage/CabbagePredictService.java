@@ -1,7 +1,6 @@
 package com.project.Justick.Service.Cabbage;
 
 import com.project.Justick.DTO.Cabbage.CabbageRequest;
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Cabbage.CabbagePredict;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Repository.Cabbage.CabbagePredictRepository;
@@ -36,7 +35,6 @@ public class CabbagePredictService {
         e.setMonth(req.getMonth());
         e.setDay(req.getDay());
         e.setAveragePrice(req.getAveragePrice());
-        e.setIntake(req.getIntake());
         e.setGrade(Grade.valueOf(req.getGrade().toUpperCase()));
         return e;
     }
@@ -50,7 +48,7 @@ public class CabbagePredictService {
         List<CabbagePredict> all = repo.findByGrade(grade);
 
         Map<String, Map<String, Integer>> grouped = all.stream()
-                .filter(c -> c.getAveragePrice() > 0 && c.getIntake() > 0)
+                .filter(c -> c.getAveragePrice() > 0)
                 .collect(Collectors.groupingBy(
                         c -> {
                             LocalDate d = LocalDate.of(c.getYear(), c.getMonth(), c.getDay());
@@ -60,10 +58,8 @@ public class CabbagePredictService {
                         TreeMap::new,
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
                             int avgPrice = (int) list.stream().mapToInt(CabbagePredict::getAveragePrice).average().orElse(0);
-                            int avgIntake = (int) list.stream().mapToInt(CabbagePredict::getIntake).average().orElse(0);
                             Map<String, Integer> m = new HashMap<>();
                             m.put("averagePrice", avgPrice);
-                            m.put("intake", avgIntake);
                             return m;
                         })
                 ));
@@ -83,16 +79,14 @@ public class CabbagePredictService {
         List<CabbagePredict> all = repo.findByGrade(grade);
 
         Map<String, Map<String, Integer>> grouped = all.stream()
-                .filter(c -> c.getAveragePrice() > 0 && c.getIntake() > 0)
+                .filter(c -> c.getAveragePrice() > 0)
                 .collect(Collectors.groupingBy(
                         c -> String.format("%04d-%02d", c.getYear(), c.getMonth()),
                         TreeMap::new,
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
                             int avgPrice = (int) list.stream().mapToInt(CabbagePredict::getAveragePrice).average().orElse(0);
-                            int avgIntake = (int) list.stream().mapToInt(CabbagePredict::getIntake).average().orElse(0);
                             Map<String, Integer> m = new HashMap<>();
                             m.put("averagePrice", avgPrice);
-                            m.put("intake", avgIntake);
                             return m;
                         })
                 ));

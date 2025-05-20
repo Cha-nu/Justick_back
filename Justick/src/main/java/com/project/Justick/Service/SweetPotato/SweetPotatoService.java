@@ -1,7 +1,6 @@
 package com.project.Justick.Service.SweetPotato;
 
 import com.project.Justick.DTO.SweetPotato.SweetPotatoRequest;
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.SweetPotato.SweetPotato;
 import com.project.Justick.Repository.SweetPotato.SweetPotatoRepository;
@@ -121,7 +120,7 @@ public class SweetPotatoService {
 
     @Transactional
     public void saveOneAndDeleteOldest(SweetPotatoRequest request) {
-        long count = repository.countByGrade(request.getGrade());
+        long count = repository.countByGrade(Grade.valueOf(request.getGrade()));
         if (count >= 28) {
             repository.deleteOldestByGrade(Grade.valueOf(request.getGrade()));
         }

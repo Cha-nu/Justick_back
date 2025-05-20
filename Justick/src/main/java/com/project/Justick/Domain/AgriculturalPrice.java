@@ -22,7 +22,7 @@ public abstract class AgriculturalPrice {
     private int day;
 
     private int averagePrice;
-    private int intake;
+
 
     @Column(columnDefinition = "varchar(20)")
     @Enumerated(EnumType.STRING)

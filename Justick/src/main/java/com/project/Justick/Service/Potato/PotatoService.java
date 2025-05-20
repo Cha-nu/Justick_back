@@ -1,11 +1,8 @@
 package com.project.Justick.Service.Potato;
 
-import com.project.Justick.DTO.Cabbage.CabbageRequest;
 import com.project.Justick.DTO.Potato.PotatoRequest;
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Potato.Potato;
-import com.project.Justick.Repository.Cabbage.CabbageRepository;
 import com.project.Justick.Repository.Potato.PotatoRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -123,7 +120,7 @@ public class PotatoService {
 
     @Transactional
     public void saveOneAndDeleteOldest(PotatoRequest request) {
-        long count = repository.countByGrade(request.getGrade());
+        long count = repository.countByGrade(Grade.valueOf(request.getGrade()));
         if (count >= 28) {
             repository.deleteOldestByGrade(Grade.valueOf(request.getGrade()));
         }

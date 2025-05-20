@@ -1,6 +1,5 @@
 package com.project.Justick.Repository.Onion;
 
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.Onion;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,7 @@ public interface OnionRepository extends JpaRepository<Onion, Long> {
     void deleteOldestByGrade(@Param("grade") Grade grade);
 
     @Query("SELECT COUNT(c) FROM Onion c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 
     Optional<Onion> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
 }
