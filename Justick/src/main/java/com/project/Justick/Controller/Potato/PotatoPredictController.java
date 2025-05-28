@@ -1,11 +1,8 @@
 package com.project.Justick.Controller.Potato;
 
-import com.project.Justick.DTO.Cabbage.CabbageRequest;
-import com.project.Justick.DTO.Potato.PotatoRequest;
-import com.project.Justick.Domain.Cabbage.CabbagePredict;
+import com.project.Justick.DTO.Potato.PotatoPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Potato.PotatoPredict;
-import com.project.Justick.Service.Cabbage.CabbagePredictService;
 import com.project.Justick.Service.Potato.PotatoPredictService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +31,7 @@ public class PotatoPredictController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<PotatoRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<PotatoPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
     }

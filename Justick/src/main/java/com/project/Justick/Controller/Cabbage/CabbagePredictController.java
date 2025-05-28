@@ -1,5 +1,6 @@
 package com.project.Justick.Controller.Cabbage;
 
+import com.project.Justick.DTO.Cabbage.CabbagePredictRequest;
 import com.project.Justick.Domain.Cabbage.CabbagePredict;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.DTO.Cabbage.CabbageRequest;
@@ -31,7 +32,7 @@ public class CabbagePredictController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<CabbageRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<CabbagePredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
     }

@@ -1,7 +1,7 @@
 package com.project.Justick.Controller.Onion;
 
 
-import com.project.Justick.DTO.Onion.OnionRequest;
+import com.project.Justick.DTO.Onion.OnionPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.OnionPredict;
 import com.project.Justick.Service.Onion.OnionPredictService;
@@ -32,7 +32,7 @@ public class OnionPredictController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<OnionRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<OnionPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
     }

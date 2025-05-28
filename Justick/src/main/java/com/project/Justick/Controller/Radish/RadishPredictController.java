@@ -1,7 +1,7 @@
 package com.project.Justick.Controller.Radish;
 
 
-import com.project.Justick.DTO.Radish.RadishRequest;
+import com.project.Justick.DTO.Radish.RadishPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Radish.RadishPredict;
 import com.project.Justick.Service.Radish.RadishPredictService;
@@ -32,7 +32,7 @@ public class RadishPredictController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<RadishRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<RadishPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
     }

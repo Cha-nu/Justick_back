@@ -1,8 +1,6 @@
 package com.project.Justick.Controller.Tomato;
 
-
-
-import com.project.Justick.DTO.Tomato.TomatoRequest;
+import com.project.Justick.DTO.Tomato.TomatoPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Tomato.TomatoPredict;
 import com.project.Justick.Service.Tomato.TomatoPredictService;
@@ -33,7 +31,7 @@ public class TomatoPredictController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<TomatoRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<TomatoPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
     }

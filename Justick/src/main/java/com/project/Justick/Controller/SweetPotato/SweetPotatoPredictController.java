@@ -1,7 +1,7 @@
 package com.project.Justick.Controller.SweetPotato;
 
 
-import com.project.Justick.DTO.SweetPotato.SweetPotatoRequest;
+import com.project.Justick.DTO.SweetPotato.SweetPotatoPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.SweetPotato.SweetPotatoPredict;
 import com.project.Justick.Service.SweetPotato.SweetPotatoPredictService;
@@ -32,7 +32,7 @@ public class SweetPotatoPredictController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> saveBatch(@RequestBody List<SweetPotatoRequest> requests) {
+    public ResponseEntity<String> saveBatch(@RequestBody List<SweetPotatoPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
     }
