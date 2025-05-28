@@ -1,6 +1,6 @@
 package com.project.Justick.Service.Radish;
 
-import com.project.Justick.DTO.Radish.RadishRequest;
+import com.project.Justick.DTO.Radish.RadishPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Radish.RadishPredict;
 import com.project.Justick.Repository.Radish.RadishPredictRepository;
@@ -22,14 +22,14 @@ public class RadishPredictService {
     }
 
     @Transactional
-    public void saveAll(List<RadishRequest> requests) {
+    public void saveAll(List<RadishPredictRequest> requests) {
         List<RadishPredict> entities = requests.stream()
                 .map(this::toEntity)
                 .toList();
         repo.saveAll(entities);
     }
 
-    private RadishPredict toEntity(RadishRequest req) {
+    private RadishPredict toEntity(RadishPredictRequest req) {
         RadishPredict e = new RadishPredict();
         e.setYear(req.getYear());
         e.setMonth(req.getMonth());

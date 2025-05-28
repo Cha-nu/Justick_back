@@ -1,6 +1,6 @@
 package com.project.Justick.Service.SweetPotato;
 
-import com.project.Justick.DTO.SweetPotato.SweetPotatoRequest;
+import com.project.Justick.DTO.SweetPotato.SweetPotatoPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.SweetPotato.SweetPotatoPredict;
 import com.project.Justick.Repository.SweetPotato.SweetPotatoPredictRepository;
@@ -22,14 +22,14 @@ public class SweetPotatoPredictService {
     }
 
     @Transactional
-    public void saveAll(List<SweetPotatoRequest> requests) {
+    public void saveAll(List<SweetPotatoPredictRequest> requests) {
         List<SweetPotatoPredict> entities = requests.stream()
                 .map(this::toEntity)
                 .toList();
         repo.saveAll(entities);
     }
 
-    private SweetPotatoPredict toEntity(SweetPotatoRequest req) {
+    private SweetPotatoPredict toEntity(SweetPotatoPredictRequest req) {
         SweetPotatoPredict e = new SweetPotatoPredict();
         e.setYear(req.getYear());
         e.setMonth(req.getMonth());

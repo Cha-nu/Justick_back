@@ -1,18 +1,14 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/justick
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 1234
+    url: jdbc:mysql://localhost:3306/justick
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: user
+    password: 12345
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-
-  h2:
-    console:
-      enabled: true

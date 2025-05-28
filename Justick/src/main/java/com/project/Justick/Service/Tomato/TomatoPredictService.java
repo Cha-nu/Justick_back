@@ -1,6 +1,6 @@
 package com.project.Justick.Service.Tomato;
 
-import com.project.Justick.DTO.Tomato.TomatoRequest;
+import com.project.Justick.DTO.Tomato.TomatoPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Tomato.TomatoPredict;
 import com.project.Justick.Repository.Tomato.TomatoPredictRepository;
@@ -22,14 +22,14 @@ public class TomatoPredictService {
     }
 
     @Transactional
-    public void saveAll(List<TomatoRequest> requests) {
+    public void saveAll(List<TomatoPredictRequest> requests) {
         List<TomatoPredict> entities = requests.stream()
                 .map(this::toEntity)
                 .toList();
         repo.saveAll(entities);
     }
 
-    private TomatoPredict toEntity(TomatoRequest req) {
+    private TomatoPredict toEntity(TomatoPredictRequest req) {
         TomatoPredict e = new TomatoPredict();
         e.setYear(req.getYear());
         e.setMonth(req.getMonth());

@@ -1,9 +1,9 @@
 package com.project.Justick.DTO.Potato;
 
-import com.project.Justick.DTO.RetailRequest;
+import com.project.Justick.DTO.AgriculturalRequest;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class PotatoRetailRequest extends RetailRequest {
+public class PotatoRetailRequest extends AgriculturalRequest {
 }

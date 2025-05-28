@@ -1,6 +1,6 @@
 package com.project.Justick.Service.Potato;
 
-import com.project.Justick.DTO.Potato.PotatoRequest;
+import com.project.Justick.DTO.Potato.PotatoPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Potato.PotatoPredict;
 import com.project.Justick.Repository.Potato.PotatoPredictRepository;
@@ -22,14 +22,14 @@ public class PotatoPredictService {
     }
 
     @Transactional
-    public void saveAll(List<PotatoRequest> requests) {
+    public void saveAll(List<PotatoPredictRequest> requests) {
         List<PotatoPredict> entities = requests.stream()
                 .map(this::toEntity)
                 .toList();
         repo.saveAll(entities);
     }
 
-    private PotatoPredict toEntity(PotatoRequest req) {
+    private PotatoPredict toEntity(PotatoPredictRequest req) {
         PotatoPredict e = new PotatoPredict();
         e.setYear(req.getYear());
         e.setMonth(req.getMonth());

@@ -1,6 +1,6 @@
 package com.project.Justick.Service.Cabbage;
 
-import com.project.Justick.DTO.Cabbage.CabbageRequest;
+import com.project.Justick.DTO.Cabbage.CabbagePredictRequest;
 import com.project.Justick.Domain.Cabbage.CabbagePredict;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Repository.Cabbage.CabbagePredictRepository;
@@ -22,14 +22,14 @@ public class CabbagePredictService {
     }
 
     @Transactional
-    public void saveAll(List<CabbageRequest> requests) {
+    public void saveAll(List<CabbagePredictRequest> requests) {
         List<CabbagePredict> entities = requests.stream()
                 .map(this::toEntity)
                 .toList();
         repo.saveAll(entities);
     }
 
-    private CabbagePredict toEntity(CabbageRequest req) {
+    private CabbagePredict toEntity(CabbagePredictRequest req) {
         CabbagePredict e = new CabbagePredict();
         e.setYear(req.getYear());
         e.setMonth(req.getMonth());

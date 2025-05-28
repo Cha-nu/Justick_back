@@ -1,7 +1,7 @@
 package com.project.Justick.Service.Onion;
 
 
-import com.project.Justick.DTO.Onion.OnionRequest;
+import com.project.Justick.DTO.Onion.OnionPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.OnionPredict;
 import com.project.Justick.Repository.Onion.OnionPredictRepository;
@@ -24,14 +24,14 @@ public class OnionPredictService {
 
     //
     @Transactional
-    public void saveAll(List<OnionRequest> requests) {
+    public void saveAll(List<OnionPredictRequest> requests) {
         List<OnionPredict> entities = requests.stream()
                 .map(this::toEntity)
                 .toList();
         repo.saveAll(entities);
     }
 
-    private OnionPredict toEntity(OnionRequest req) {
+    private OnionPredict toEntity(OnionPredictRequest req) {
         OnionPredict e = new OnionPredict();
         e.setYear(req.getYear());
         e.setMonth(req.getMonth());
