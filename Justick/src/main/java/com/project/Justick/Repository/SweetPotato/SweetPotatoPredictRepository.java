@@ -25,5 +25,5 @@ public interface SweetPotatoPredictRepository extends JpaRepository<SweetPotatoP
 
 
     @Query("SELECT COUNT(c) FROM SweetPotatoPredict c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 }

@@ -24,5 +24,5 @@ public interface OnionPredictRepository extends JpaRepository<OnionPredict, Long
 
 
     @Query("SELECT COUNT(c) FROM OnionPredict c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 }

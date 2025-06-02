@@ -11,7 +11,7 @@ intake_df = pd.read_excel(intake_path, sheet_name=0)
 
 # 특, 상 필터
 grade_ratio = {
-    '특': ('Special', 0.05),
+    '특': ('SPECIAL', 0.05),
     '상': ('HIGH', 0.35),
 }
 filtered = onion_df[onion_df['등급명'].isin(grade_ratio)].copy()
@@ -48,7 +48,7 @@ final_df = final_df.sort_values(['year', 'month', 'day', 'rate'])
 
 # 저장
 os.makedirs('store', exist_ok=True)
-output_path = 'store/sweetpotato_separated.csv'
+output_path = 'store/sweetPotato_separated.csv'
 final_df.to_csv(output_path, index=False)
 
 print(final_df.head())

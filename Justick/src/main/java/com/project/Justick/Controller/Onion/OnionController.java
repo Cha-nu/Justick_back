@@ -61,4 +61,12 @@ public class OnionController {
         return service.getMonthlyAverages(Grade.SPECIAL);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Long id) {
+        service.deleteById(id);
+        return ResponseEntity.ok("Onion data deleted with id: " + id);
+    }
+
+
+
 }

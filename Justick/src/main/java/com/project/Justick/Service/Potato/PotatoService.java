@@ -1,6 +1,7 @@
 package com.project.Justick.Service.Potato;
 
 import com.project.Justick.DTO.Potato.PotatoRequest;
+import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Potato.Potato;
 import com.project.Justick.Repository.Potato.PotatoRepository;
@@ -41,7 +42,7 @@ public class PotatoService {
                     String key = String.format("%04d-%02d-%02d", d.getYear(), d.getMonthValue(), weekOfMonth);
                     return new AbstractMap.SimpleEntry<>(key, new AbstractMap.SimpleEntry<>(weekOfMonth, c));
                 })
-                .filter(e -> e.getValue().getKey() <= 8) // 8주차까지만
+                .filter(e -> e.getValue().getKey() <= 10) // 8주차까지만
                 .collect(Collectors.groupingBy(
                         Map.Entry::getKey,
                         TreeMap::new,
@@ -82,7 +83,7 @@ public class PotatoService {
 
         return fullResult.entrySet()
                 .stream()
-                .skip(Math.max(0, fullResult.size() - 9)) // 최신 9개월만 추출
+                .skip(Math.max(0, fullResult.size() - 11)) // 최신 9개월만 추출
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -105,14 +106,7 @@ public class PotatoService {
         entity.setDay(request.getDay());
         entity.setAveragePrice(request.getAveragePrice());
         entity.setIntake(request.getIntake());
-        Optional<Potato> prev = repository.findByGradeAndYearAndMonthAndDay(
-                entity.getGrade(),
-                entity.getYear(),
-                entity.getMonth(),
-                entity.getDay() - 1
-        );
-        int prevPrice = prev.map(Potato::getAveragePrice).orElse(0);
-        entity.setGap(entity.getAveragePrice() - prevPrice);
+        entity.setGap(request.getGap());
         entity.setGrade(Grade.valueOf(request.getGrade()));
         return entity;
     }
@@ -120,10 +114,18 @@ public class PotatoService {
 
     @Transactional
     public void saveOneAndDeleteOldest(PotatoRequest request) {
-        long count = repository.countByGrade(Grade.valueOf(request.getGrade()));
-        if (count >= 28) {
-            repository.deleteOldestByGrade(Grade.valueOf(request.getGrade()));
+        Grade grade = Grade.valueOf(request.getGrade());
+        long count = repository.countByGrade(grade);
+        if (count >= 1) {
+            // 가장 오래된 데이터 id 조회
+            Optional<Potato> oldest = repository.findByGradeOrderByYearAscMonthAscDayAsc(grade).stream().findFirst();
+            oldest.ifPresent(c -> repository.deleteById(c.getId()));
         }
         repository.save(toEntity(request));
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }

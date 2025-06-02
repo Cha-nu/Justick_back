@@ -6,4 +6,5 @@ import lombok.Setter;
 
 @Getter @Setter
 public class OnionRetailRequest extends AgriculturalRequest {
+    private int gap;
 }

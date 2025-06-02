@@ -1,6 +1,7 @@
 package com.project.Justick.Service.Onion;
 
 import com.project.Justick.DTO.Onion.OnionRequest;
+import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.Onion;
 import com.project.Justick.Repository.Onion.OnionRepository;
@@ -42,7 +43,7 @@ public class OnionService {
                     String key = String.format("%04d-%02d-%02d", d.getYear(), d.getMonthValue(), weekOfMonth);
                     return new AbstractMap.SimpleEntry<>(key, new AbstractMap.SimpleEntry<>(weekOfMonth, c));
                 })
-                .filter(e -> e.getValue().getKey() <= 8) // 8주차까지만
+                .filter(e -> e.getValue().getKey() <= 10) // 10주차까지만
                 .collect(Collectors.groupingBy(
                         Map.Entry::getKey,
                         TreeMap::new,
@@ -84,7 +85,7 @@ public class OnionService {
 
         return fullResult.entrySet()
                 .stream()
-                .skip(Math.max(0, fullResult.size() - 9)) // 최신 9개월만 추출
+                .skip(Math.max(0, fullResult.size() - 11)) // 최신 11개월만 추출
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -108,15 +109,8 @@ public class OnionService {
         entity.setDay(request.getDay());
         entity.setAveragePrice(request.getAveragePrice());
         entity.setIntake(request.getIntake());
-        Optional<Onion> prev = repository.findByGradeAndYearAndMonthAndDay(
-                entity.getGrade(),
-                entity.getYear(),
-                entity.getMonth(),
-                entity.getDay() - 1
-        );
-        int prevPrice = prev.map(Onion::getAveragePrice).orElse(0);
-        entity.setGap(entity.getAveragePrice() - prevPrice);
         entity.setGrade(Grade.valueOf(request.getGrade()));
+        entity.setGap(request.getGap());
         return entity;
     }
 
@@ -124,10 +118,18 @@ public class OnionService {
     // 최신 데이터 저장 및 오래된 데이터 삭제
     @Transactional
     public void saveOneAndDeleteOldest(OnionRequest request) {
-        long count = repository.countByGrade(Grade.valueOf(request.getGrade()));
-        if (count >= 28) {
-            repository.deleteOldestByGrade(Grade.valueOf(request.getGrade()));
+        Grade grade = Grade.valueOf(request.getGrade());
+        long count = repository.countByGrade(grade);
+        if (count >= 1) {
+            // 가장 오래된 데이터 id 조회
+            Optional<Onion> oldest = repository.findByGradeOrderByYearAscMonthAscDayAsc(grade).stream().findFirst();
+            oldest.ifPresent(c -> repository.deleteById(c.getId()));
         }
         repository.save(toEntity(request));
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }

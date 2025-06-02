@@ -26,4 +26,6 @@ public interface TomatoRepository extends JpaRepository<Tomato, Long> {
     long countByGrade(@Param("grade") Grade grade);
 
     Optional<Tomato> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
+
+    List<Tomato> findByGradeOrderByYearAscMonthAscDayAsc(Grade grade);
 }

@@ -11,7 +11,7 @@ intake_df = pd.read_excel(intake_path, sheet_name=0)
 
 # 특, 상 필터
 grade_ratio = {
-    '특': ('Special', 0.05),
+    '특': ('SPECIAL', 0.05),
     '상': ('HIGH', 0.35),
 }
 filtered = cabbage_df[cabbage_df['등급명'].isin(grade_ratio)].copy()

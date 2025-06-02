@@ -25,5 +25,5 @@ public interface TomatoPredictRepository extends JpaRepository<TomatoPredict, Lo
 
 
     @Query("SELECT COUNT(c) FROM TomatoPredict c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 }

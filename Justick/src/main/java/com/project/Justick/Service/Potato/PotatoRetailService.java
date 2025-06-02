@@ -1,8 +1,10 @@
 package com.project.Justick.Service.Potato;
 
+import com.project.Justick.DTO.Potato.PotatoRetailRequest;
 import com.project.Justick.Domain.Potato.PotatoRetail;
 import com.project.Justick.Repository.Potato.PotatoRetailRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -20,22 +22,9 @@ public class PotatoRetailService {
         return potatoRetailRepository.findAll();
     }
 
-    public PotatoRetail addPotatoRetail(PotatoRetail newData) {
+    public void addPotatoRetail(PotatoRetailRequest request) {
+        PotatoRetail newData = toEntity(request);
         List<PotatoRetail> all = potatoRetailRepository.findAll();
-
-        PotatoRetail prev = all.stream()
-                .max(Comparator.comparing(PotatoRetail::getYear)
-                        .thenComparing(PotatoRetail::getMonth)
-                        .thenComparing(PotatoRetail::getDay))
-                .orElse(null);
-
-        // gap 계산
-        if (prev != null) {
-            int gap = newData.getAveragePrice() - prev.getAveragePrice();
-            newData.setGap(gap);
-        } else {
-            newData.setGap(0); // 첫 데이터는 gap 0
-        }
 
         // 만약 데이터가 28개 이상이면 가장 오래된 1개 삭제
         if (all.size() >= 28) {
@@ -48,6 +37,28 @@ public class PotatoRetailService {
             potatoRetailRepository.delete(oldest);
         }
 
-        return potatoRetailRepository.save(newData);
+        potatoRetailRepository.save(newData);
+    }
+
+    private PotatoRetail toEntity(PotatoRetailRequest request) {
+        PotatoRetail entity = new PotatoRetail();
+        entity.setYear(request.getYear());
+        entity.setMonth(request.getMonth());
+        entity.setDay(request.getDay());
+        entity.setAveragePrice(request.getAveragePrice());
+        entity.setGap(request.getGap());
+        // 필요시 추가 필드 매핑
+        return entity;
+    }
+
+    @Transactional
+    public void saveAll(List<PotatoRetailRequest> requests) {
+        List<PotatoRetail> list = requests.stream().map(this::toEntity).toList();
+        potatoRetailRepository.saveAll(list);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        potatoRetailRepository.deleteById(id);
     }
 }

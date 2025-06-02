@@ -23,18 +23,23 @@ public class CabbagePredictController {
 
     @GetMapping("/high-prices")
     public List<CabbagePredict> getHighPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.HIGH);
+        return service.findRecentDaysWithForecast(Grade.HIGH);
     }
 
     @GetMapping("/special-prices")
     public List<CabbagePredict> getSpecialPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.SPECIAL);
+        return service.findRecentDaysWithForecast(Grade.SPECIAL);
     }
 
     @PostMapping("/batch")
     public ResponseEntity<String> saveBatch(@RequestBody List<CabbagePredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
+    }
+    @PostMapping
+    public ResponseEntity<String> saveOne(@RequestBody CabbagePredictRequest request) {
+        service.saveOneAndDeleteOldest(request);
+        return ResponseEntity.ok("Saved newest and deleted oldest if needed.");
     }
 
     @DeleteMapping("/{id}")

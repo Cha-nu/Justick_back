@@ -8,4 +8,5 @@ import lombok.Setter;
 public class CabbageRequest extends AgriculturalRequest {
     private int intake;
     private String grade; // 등급 SPECIAL, HIGH
+    private int gap;
 }

@@ -26,4 +26,6 @@ public interface CabbageRepository extends JpaRepository<Cabbage, Long> {
     long countByGrade(@Param("grade") Grade grade);
 
     Optional<Cabbage> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
+
+    List<Cabbage> findByGradeOrderByYearAscMonthAscDayAsc(Grade grade);
 }

@@ -1,6 +1,5 @@
 package com.project.Justick.Controller.Onion;
 
-
 import com.project.Justick.DTO.Onion.OnionPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.OnionPredict;
@@ -23,18 +22,24 @@ public class OnionPredictController {
 
     @GetMapping("/high-prices")
     public List<OnionPredict> getHighPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.HIGH);
+        return service.findRecentDaysWithForecast(Grade.HIGH);
     }
 
     @GetMapping("/special-prices")
     public List<OnionPredict> getSpecialPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.SPECIAL);
+        return service.findRecentDaysWithForecast(Grade.SPECIAL);
     }
 
     @PostMapping("/batch")
     public ResponseEntity<String> saveBatch(@RequestBody List<OnionPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
+    }
+
+    @PostMapping
+    public ResponseEntity<String> saveOne(@RequestBody OnionPredictRequest request) {
+        service.saveOneAndDeleteOldest(request);
+        return ResponseEntity.ok("Saved newest and deleted oldest if needed.");
     }
 
     @DeleteMapping("/{id}")

@@ -65,7 +65,7 @@ public class SweetPotatoPredictService {
                 ));
 
         return grouped.entrySet().stream()
-                .skip(Math.max(0, grouped.size() - 12))
+                .skip(Math.max(0, grouped.size() - 14))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -101,14 +101,14 @@ public class SweetPotatoPredictService {
                 ));
     }
 
-    public List<SweetPotatoPredict> findRecent20DaysWithForecast(Grade grade) {
+    public List<SweetPotatoPredict> findRecentDaysWithForecast(Grade grade) {
         SweetPotatoPredict latest = repo.findLatestByGrade(grade);
         if (latest == null) return List.of();
 
         LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
 
-        LocalDate from = latestDate.minusDays(15);
-        LocalDate to = latestDate.plusDays(5);
+        LocalDate from = latestDate.minusDays(27); // 최근 데이터 포함 28일 전까지
+        LocalDate to = latestDate;
 
         return repo.findByDateRangeAndGrade(
                 from.getYear(), from.getMonthValue(), from.getDayOfMonth(),
@@ -117,4 +117,17 @@ public class SweetPotatoPredictService {
         );
     }
 
+    @Transactional
+    public void saveOneAndDeleteOldest(SweetPotatoPredictRequest request) {
+        Grade grade = Grade.valueOf(request.getGrade().toUpperCase());
+        long count = repo.countByGrade(grade);
+        if (count >= 1) {
+            // 가장 오래된 데이터 삭제
+            repo.findByGrade(grade).stream()
+                    .min(Comparator.comparing(SweetPotatoPredict::getYear)
+                            .thenComparing(SweetPotatoPredict::getMonth)
+                            .thenComparing(SweetPotatoPredict::getDay)).ifPresent(repo::delete);
+        }
+        repo.save(toEntity(request));
+    }
 }

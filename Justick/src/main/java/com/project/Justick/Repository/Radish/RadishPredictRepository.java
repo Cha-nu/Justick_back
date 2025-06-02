@@ -25,5 +25,5 @@ public interface RadishPredictRepository extends JpaRepository<RadishPredict, Lo
 
 
     @Query("SELECT COUNT(c) FROM RadishPredict c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 }

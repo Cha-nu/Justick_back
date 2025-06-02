@@ -22,18 +22,24 @@ public class TomatoPredictController {
 
     @GetMapping("/high-prices")
     public List<TomatoPredict> getHighPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.HIGH);
+        return service.findRecentDaysWithForecast(Grade.HIGH);
     }
 
     @GetMapping("/special-prices")
     public List<TomatoPredict> getSpecialPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.SPECIAL);
+        return service.findRecentDaysWithForecast(Grade.SPECIAL);
     }
 
     @PostMapping("/batch")
     public ResponseEntity<String> saveBatch(@RequestBody List<TomatoPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
+    }
+
+    @PostMapping
+    public ResponseEntity<String> saveOne(@RequestBody TomatoPredictRequest request) {
+        service.saveOneAndDeleteOldest(request);
+        return ResponseEntity.ok("Saved newest and deleted oldest if needed.");
     }
 
     @DeleteMapping("/{id}")

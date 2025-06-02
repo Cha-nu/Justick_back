@@ -25,5 +25,5 @@ public interface PotatoPredictRepository extends JpaRepository<PotatoPredict, Lo
 
 
     @Query("SELECT COUNT(c) FROM PotatoPredict c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 }

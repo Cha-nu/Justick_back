@@ -1,6 +1,7 @@
 package com.project.Justick.Controller.Radish;
 
 
+import com.project.Justick.DTO.Cabbage.CabbagePredictRequest;
 import com.project.Justick.DTO.Radish.RadishPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Radish.RadishPredict;
@@ -23,18 +24,24 @@ public class RadishPredictController {
 
     @GetMapping("/high-prices")
     public List<RadishPredict> getHighPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.HIGH);
+        return service.findRecentDaysWithForecast(Grade.HIGH);
     }
 
     @GetMapping("/special-prices")
     public List<RadishPredict> getSpecialPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.SPECIAL);
+        return service.findRecentDaysWithForecast(Grade.SPECIAL);
     }
 
     @PostMapping("/batch")
     public ResponseEntity<String> saveBatch(@RequestBody List<RadishPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
+    }
+
+    @PostMapping
+    public ResponseEntity<String> saveOne(@RequestBody RadishPredictRequest request) {
+        service.saveOneAndDeleteOldest(request);
+        return ResponseEntity.ok("Saved newest and deleted oldest if needed.");
     }
 
     @DeleteMapping("/{id}")

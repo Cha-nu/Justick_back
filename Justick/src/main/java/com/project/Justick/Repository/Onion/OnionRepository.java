@@ -25,4 +25,6 @@ public interface OnionRepository extends JpaRepository<Onion, Long> {
     long countByGrade(@Param("grade") Grade grade);
 
     Optional<Onion> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
+
+    List<Onion> findByGradeOrderByYearAscMonthAscDayAsc(Grade grade);
 }

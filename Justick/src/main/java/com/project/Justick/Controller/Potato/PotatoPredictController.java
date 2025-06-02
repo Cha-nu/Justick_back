@@ -1,5 +1,6 @@
 package com.project.Justick.Controller.Potato;
 
+import com.project.Justick.DTO.Cabbage.CabbagePredictRequest;
 import com.project.Justick.DTO.Potato.PotatoPredictRequest;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Potato.PotatoPredict;
@@ -22,18 +23,24 @@ public class PotatoPredictController {
 
     @GetMapping("/high-prices")
     public List<PotatoPredict> getHighPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.HIGH);
+        return service.findRecentDaysWithForecast(Grade.HIGH);
     }
 
     @GetMapping("/special-prices")
     public List<PotatoPredict> getSpecialPredicts() {
-        return service.findRecent20DaysWithForecast(Grade.SPECIAL);
+        return service.findRecentDaysWithForecast(Grade.SPECIAL);
     }
 
     @PostMapping("/batch")
     public ResponseEntity<String> saveBatch(@RequestBody List<PotatoPredictRequest> requests) {
         service.saveAll(requests);
         return ResponseEntity.ok("Prediction batch insert complete.");
+    }
+
+    @PostMapping
+    public ResponseEntity<String> saveOne(@RequestBody PotatoPredictRequest request) {
+        service.saveOneAndDeleteOldest(request);
+        return ResponseEntity.ok("Saved newest and deleted oldest if needed.");
     }
 
     @DeleteMapping("/{id}")

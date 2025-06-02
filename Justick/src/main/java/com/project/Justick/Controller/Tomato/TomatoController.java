@@ -61,4 +61,11 @@ public class TomatoController {
     public Map<String, Map<String, Integer>> getSpecialMonthlyAvg() {
         return service.getMonthlyAverages(Grade.SPECIAL);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Long id) {
+        service.deleteById(id);
+        return ResponseEntity.ok("Tomato data deleted with id: " + id);
+    }
+
 }

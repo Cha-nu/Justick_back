@@ -24,6 +24,6 @@ public interface CabbagePredictRepository extends JpaRepository<CabbagePredict, 
 
 
     @Query("SELECT COUNT(c) FROM CabbagePredict c WHERE c.grade = :grade")
-    long countByGrade(@Param("grade") String grade);
+    long countByGrade(@Param("grade") Grade grade);
 
 }

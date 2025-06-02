@@ -1,9 +1,12 @@
 package com.project.Justick.Controller.Radish;
 
+import com.project.Justick.DTO.Cabbage.CabbageRetailRequest;
+import com.project.Justick.DTO.Radish.RadishRetailRequest;
 import com.project.Justick.Domain.Cabbage.CabbageRetail;
 import com.project.Justick.Domain.Radish.RadishRetail;
 import com.project.Justick.Service.Cabbage.CabbageRetailService;
 import com.project.Justick.Service.Radish.RadishRetailService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +27,23 @@ public class RadishRetailController {
     }
 
     @PostMapping
-    public RadishRetail createRadishRetail(@RequestBody RadishRetail radishRetail) {
-        return radishRetailService.addRadishRetail(radishRetail);
+    public ResponseEntity<String> createRadishRetail(@RequestBody RadishRetailRequest requests) {
+        radishRetailService.addRadishRetail(requests);
+        return ResponseEntity.ok("RadishRetail created");
+    }
+
+    // batch 저장
+    @PostMapping("/batch")
+    public ResponseEntity<String> saveBatch(@RequestBody List<RadishRetailRequest> requests) {
+        radishRetailService.saveAll(requests);
+        return ResponseEntity.ok("Batch insert complete.");
+    }
+
+    // id로 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Long id) {
+        radishRetailService.deleteById(id);
+        return ResponseEntity.ok("Deleted Radish-retail with id: " + id);
     }
 
 }

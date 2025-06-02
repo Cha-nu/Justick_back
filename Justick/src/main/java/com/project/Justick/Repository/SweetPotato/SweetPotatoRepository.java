@@ -16,14 +16,16 @@ public interface SweetPotatoRepository extends JpaRepository<SweetPotato, Long> 
 
     @Query("SELECT c FROM SweetPotato c WHERE c.grade = :grade ORDER BY c.year DESC, c.month DESC, c.day DESC")
     List<SweetPotato> findTopByGradeOrderByDateDesc(Grade grade, Pageable pageable);
-    // Save a batch of Cabbage entries
+    // Save a batch of SweetPotato entries
     @Modifying
     @Query("DELETE FROM SweetPotato c WHERE c.grade = :grade AND c.id = (SELECT c2.id FROM Cabbage c2 WHERE c2.grade = :grade ORDER BY c2.year, c2.month, c2.day LIMIT 1)")
     void deleteOldestByGrade(@Param("grade") Grade grade);
 
-    // Save a single Cabbage entry and delete the oldest one
+    // Save a single SweetPotato entry and delete the oldest one
     @Query("SELECT COUNT(c) FROM SweetPotato c WHERE c.grade = :grade")
     long countByGrade(@Param("grade") Grade grade);
 
     Optional<SweetPotato> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
+
+    List<SweetPotato> findByGradeOrderByYearAscMonthAscDayAsc(Grade grade);
 }

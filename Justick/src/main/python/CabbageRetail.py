@@ -34,4 +34,4 @@ final_retail_df = final_retail_df.sort_values(['year', 'month', 'day'])
 output_path = 'store/cabbage_retail.csv'
 final_retail_df.to_csv(output_path, index=False)
 
-final_retail_df.head()
+print(final_retail_df.head())

@@ -26,4 +26,5 @@ public interface PotatoRepository extends JpaRepository<Potato, Long> {
     long countByGrade(@Param("grade") Grade grade);
 
     Optional<Potato> findByGradeAndYearAndMonthAndDay(Grade grade, int year, int month, int day);
+    List<Potato> findByGradeOrderByYearAscMonthAscDayAsc(Grade grade);
 }
