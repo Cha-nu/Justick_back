@@ -107,14 +107,18 @@ public class SweetPotatoPredictService {
 
         LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
 
-        LocalDate from = latestDate.minusDays(27); // 최근 데이터 포함 28일 전까지
-        LocalDate to = latestDate;
+        // 42일 전부터 21일 전까지의 데이터
+        LocalDate from = latestDate.minusDays(42);
+        LocalDate to = latestDate.minusDays(21);
 
-        return repo.findByDateRangeAndGrade(
+        List<SweetPotatoPredict> result = repo.findByDateRangeAndGrade(
                 from.getYear(), from.getMonthValue(), from.getDayOfMonth(),
                 to.getYear(), to.getMonthValue(), to.getDayOfMonth(),
                 grade
         );
+
+        //21개 제한
+        return result.size() > 21 ? result.subList(0, 21) : result;
     }
 
     @Transactional
