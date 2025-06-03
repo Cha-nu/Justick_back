@@ -167,6 +167,8 @@ class Predictor7:
         torch.save(self.model.state_dict(), path)
 
     def load(self, path="model_weekly.pth"):
+        self.model = LSTMModel(input_size=len(self.feature_cols))
+        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.LR)
         self.model.load_state_dict(torch.load(path))
         self.model.eval()
 

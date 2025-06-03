@@ -108,7 +108,7 @@ public class RadishPredictService {
         LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
 
         // 42일 전부터 21일 전까지의 데이터
-        LocalDate from = latestDate.minusDays(42);
+        LocalDate from = latestDate.minusDays(48);
         LocalDate to = latestDate.minusDays(21);
 
         List<RadishPredict> result = repo.findByDateRangeAndGrade(
@@ -118,7 +118,7 @@ public class RadishPredictService {
         );
 
         //21개 제한
-        return result.size() > 21 ? result.subList(0, 21) : result;
+        return result.size() > 28 ? result.subList(0, 28) : result;
     }
 
     @Transactional

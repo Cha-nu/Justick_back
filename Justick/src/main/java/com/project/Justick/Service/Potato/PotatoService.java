@@ -1,7 +1,6 @@
 package com.project.Justick.Service.Potato;
 
 import com.project.Justick.DTO.Potato.PotatoRequest;
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Potato.Potato;
 import com.project.Justick.Repository.Potato.PotatoRepository;
@@ -42,7 +41,7 @@ public class PotatoService {
                     String key = String.format("%04d-%02d-%02d", d.getYear(), d.getMonthValue(), weekOfMonth);
                     return new AbstractMap.SimpleEntry<>(key, new AbstractMap.SimpleEntry<>(weekOfMonth, c));
                 })
-                .filter(e -> e.getValue().getKey() <= 10) // 8주차까지만
+                .filter(e -> e.getValue().getKey() <= 10) // 10주차까지만
                 .collect(Collectors.groupingBy(
                         Map.Entry::getKey,
                         TreeMap::new,
@@ -60,7 +59,15 @@ public class PotatoService {
                         })
                 ));
 
-        return result;
+        // 최신 10주차만 반환
+        return result.entrySet().stream()
+                .skip(Math.max(0, result.size() - 10))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> b,
+                        LinkedHashMap::new
+                ));
     }
 
     public Map<String, Map<String, Integer>> getMonthlyAverages(Grade grade) {

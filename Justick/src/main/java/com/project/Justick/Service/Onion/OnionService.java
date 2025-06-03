@@ -1,7 +1,6 @@
 package com.project.Justick.Service.Onion;
 
 import com.project.Justick.DTO.Onion.OnionRequest;
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Onion.Onion;
 import com.project.Justick.Repository.Onion.OnionRepository;
@@ -61,7 +60,15 @@ public class OnionService {
                         })
                 ));
 
-        return result;
+        // 최신 10주차만 반환
+        return result.entrySet().stream()
+                .skip(Math.max(0, result.size() - 10))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> b,
+                        LinkedHashMap::new
+                ));
     }
 
     // 월별 평균 가격 및 출하량 계산

@@ -1,7 +1,6 @@
 package com.project.Justick.Service.Radish;
 
 import com.project.Justick.DTO.Radish.RadishRequest;
-import com.project.Justick.Domain.Cabbage.Cabbage;
 import com.project.Justick.Domain.Grade;
 import com.project.Justick.Domain.Radish.Radish;
 import com.project.Justick.Repository.Radish.RadishRepository;
@@ -60,7 +59,15 @@ public class RadishService {
                         })
                 ));
 
-        return result;
+        // 최신 10주차만 반환
+        return result.entrySet().stream()
+                .skip(Math.max(0, result.size() - 10))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> b,
+                        LinkedHashMap::new
+                ));
     }
 
     public Map<String, Map<String, Integer>> getMonthlyAverages(Grade grade) {
