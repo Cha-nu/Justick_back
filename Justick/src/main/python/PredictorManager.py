@@ -6,13 +6,14 @@ import datetime
 
 class PredictionManager:
     def __init__(self, items=None, grades=None, base_dir="store", model_dir="model"):
-        self.items = items or ["cabbage", "onion", "potato", "radish", "sweetPotato", "tomato"]
-        self.grades = grades or ["HIGH", "SPECIAL"]
+        self.items = items or ["cabbage"]
+        self.grades = grades or ["HIGH"]
         self.base_dir = base_dir
         self.model_dir = model_dir
 
     def batch(self):
-        cutoff_date = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        # cutoff_date = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        cutoff_date = "2025-05-30"
         for item in self.items:
             df = pd.read_csv(f"{self.base_dir}/{item}_separated.csv")
 
@@ -115,7 +116,7 @@ class PredictionManager:
 
 if __name__ == "__main__":
     manager = PredictionManager()
-    manager.batch()
+    # manager.batch()
 
     # 매일 아침 continuous 실행
-    # manager.continuous()
+    manager.continuous()

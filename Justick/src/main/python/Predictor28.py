@@ -5,7 +5,9 @@ import torch.nn as nn
 from sklearn.preprocessing import MinMaxScaler
 from torch.utils.data import DataLoader, TensorDataset
 import random
+import joblib
 
+# 고정 시드
 torch.manual_seed(42)
 np.random.seed(42)
 random.seed(42)
@@ -14,7 +16,7 @@ class LSTMModel(nn.Module):
     def __init__(self, input_size, hidden_size=64, num_layers=2, dropout=0.2):
         super().__init__()
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=dropout, batch_first=True)
-        self.fc = nn.Linear(hidden_size, 28)  # 28일 예측
+        self.fc = nn.Linear(hidden_size, 28)
 
     def forward(self, x):
         out, _ = self.lstm(x)
@@ -45,7 +47,7 @@ class EWC:
         return sum((self._precision_matrices[n] * (p - self.params[n]).pow(2)).sum()
                    for n, p in model.named_parameters() if p.requires_grad)
 
-class Predictor28:
+class CabbagePredictor28:
     def __init__(self, window=7, epochs=30, lr=1e-3, lambda_ewc=100):
         self.WINDOW = window
         self.EPOCHS = epochs
@@ -57,9 +59,41 @@ class Predictor28:
         self.scaler_y = MinMaxScaler()
         self.criterion = nn.MSELoss()
         self.results = []
-        self.rate = "SPECIAL"
+        self.rate = "Special"
+        self.model = LSTMModel(input_size=len(self.feature_cols))
+        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.LR)
+        self.ewc_list = []
 
-    def fit(self, df_raw, cutoff_date="2025-05-27", months=[5, 6], rate="SPECIAL"):
+    def save(self, rate):
+        prefix = "special" if rate.lower() == "special" else "high"
+        torch.save(self.model.state_dict(), f"{prefix}_monthly_model.pth")
+        joblib.dump(self.scaler_x, f"{prefix}_monthly_scaler_x.pkl")
+        joblib.dump(self.scaler_y, f"{prefix}_monthly_scaler_y.pkl")
+
+    def load(self, rate):
+        prefix = "special" if rate.lower() == "special" else "high"
+        self.model.load_state_dict(torch.load(f"{prefix}_monthly_model.pth"))
+        self.model.eval()
+        self.scaler_x = joblib.load(f"{prefix}_monthly_scaler_x.pkl")
+        self.scaler_y = joblib.load(f"{prefix}_monthly_scaler_y.pkl")
+        self.ewc_list = []
+
+    def predict_next(self):
+        return self.predict_next_month()[0]
+
+    def predict_next_month(self):
+        return [round(price, 2) for (_, price, _) in self.results[-28:]]
+
+    def post_latest(self):
+        return [{
+            "year": date.year,
+            "month": date.month,
+            "day": date.day,
+            "price": round(price, 2),
+            "rate": self.rate
+        } for (date, price, _) in self.results[-28:]]
+
+    def fit(self, df_raw, cutoff_date="2025-05-27", months=[5, 6], rate="Special"):
         self.rate = rate
         df = df_raw[df_raw['rate'] == rate].copy()
         df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
@@ -89,9 +123,6 @@ class Predictor28:
         self.X_seq = torch.tensor(np.array(X_seq), dtype=torch.float32)
         self.y_seq = torch.tensor(np.array(y_seq), dtype=torch.float32)
         self.date_seq = date_seq
-
-        self.model = LSTMModel(input_size=len(self.feature_cols))
-        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.LR)
 
         cutoff = pd.to_datetime(cutoff_date)
         init_idx = [i for i, d in enumerate(self.date_seq) if d <= cutoff]
@@ -153,48 +184,55 @@ class Predictor28:
             for i in range(28):
                 self.results.append((start_date + pd.Timedelta(days=i), pred_rescaled[i], None))
 
-    def predict_next_month(self):
-        return [round(price, 2) for (_, price, _) in self.results[-28:]]
+    def update_one_day(self, df_raw, months=[5, 6]):
+        if not hasattr(self, 'ewc_list'):
+            self.ewc_list = []
 
-    def post_latest(self):
-        return [{
-            "year": date.year,
-            "month": date.month,
-            "day": date.day,
-            "price": int(price),
-            "rate": self.rate
-        } for (date, price, _) in self.results[-28:]]
+        df = df_raw[df_raw['rate'] == self.rate].copy()
+        df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
+        df = df[df['month'].isin(months)].sort_values('date').reset_index(drop=True)
 
-    def save(self, path="model_monthly.pth"):
-        torch.save(self.model.state_dict(), path)
+        df['prev_price'] = df['avg_price'].shift(1)
+        df['price_diff'] = df['avg_price'] - df['prev_price']
+        df['rolling_mean'] = df['avg_price'].rolling(window=3).mean()
+        df['rolling_std'] = df['avg_price'].rolling(window=3).std()
+        df = df.dropna()
+        df['log_price'] = np.log1p(df['avg_price'])
 
-    def load(self, path="model_monthly.pth"):
-        self.model = LSTMModel(input_size=len(self.feature_cols))
-        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.LR)
-        self.model.load_state_dict(torch.load(path))
+        df[self.feature_cols] = self.scaler_x.transform(df[self.feature_cols])
+        df[[self.target_col]] = self.scaler_y.transform(df[[self.target_col]])
+
+        latest_df = df.iloc[-(self.WINDOW + 28):].copy()
+
+        x_seq = latest_df.iloc[:self.WINDOW][self.feature_cols].values
+        y_seq = latest_df.iloc[self.WINDOW:][self.target_col].values
+
+        x_tensor = torch.tensor(x_seq, dtype=torch.float32).unsqueeze(0)
+        y_tensor = torch.tensor(y_seq, dtype=torch.float32).unsqueeze(0)
+
         self.model.eval()
+        with torch.no_grad():
+            pred = self.model(x_tensor).squeeze(0).numpy()
+            pred_log = self.scaler_y.inverse_transform(pred.reshape(-1, 1)).flatten()
+            pred_rescaled = np.expm1(pred_log)
+
+            pred_start_date = df['date'].iloc[-1] + pd.Timedelta(days=1)
+            for i in range(28):
+                self.results.append((pred_start_date + pd.Timedelta(days=i), pred_rescaled[i], None))
+
+        loader = DataLoader(TensorDataset(x_tensor, y_tensor), batch_size=1)
+        self.model.train()
+        for epoch in range(self.EPOCHS):
+            for x, y in loader:
+                self.optimizer.zero_grad()
+                out = self.model(x)
+                loss = self.criterion(out, y)
+                for ewc in self.ewc_list:
+                    loss += self.LAMBDA_EWC * ewc.penalty(self.model)
+                loss.backward()
+                self.optimizer.step()
+
+        self.ewc_list.append(EWC(self.model, loader, self.criterion))
 
 if __name__ == "__main__":
-    df = pd.read_csv("cabbage_separated.csv")
-
-    model = Predictor28()
-    model.fit(df, cutoff_date="2025-05-20", months=[4, 5, 6], rate="HIGH")
-    model.post_latest()
-
-    model.update_one_day(df, months=[4, 5, 6], rate="HIGH") #하루 업데이트
-    model.save("high_model.pth")      # 저장
-    model.load("high_model.pth")      # 불러오기
-    model = Predictor28()  # 모델 새로 인스턴스화 (완전 초기화)
-    model.fit(df, cutoff_date="2025-07-15", months=[7, 8, 9], rate="SPECIAL")
-
-    #예시
-    # 최초 1회만
-    model = Predictor28()
-    model.fit(df, cutoff_date="2025-05-20", months=[4, 5, 6], rate="SPECIAL")
-    model.save("special_model.pth")
-
-    # 이후 매일 아침 업데이트
-    model.load("special_model.pth")
-    df = pd.read_csv("cabbage_separated.csv")
-    model.update_one_day(df, months=[4, 5, 6], rate="SPECIAL")
-    model.save("special_model.pth")
+    print("please run PredictorManager.py instead of this file.")
