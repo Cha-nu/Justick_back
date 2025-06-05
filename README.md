@@ -1,4 +1,5 @@
 # Justick
+
 ### 농산물 시세 예측 서비스 '딱대'🥬
 description: 캡스톤(2) 프로젝트 
 #### version:  
