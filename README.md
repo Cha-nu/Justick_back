@@ -8,7 +8,7 @@ node.js: 22.14
 npm version: 11.1.0  
 
 #### web url
-(http://justick.myvnc,com:2025/)
+(http://justick.myvnc.com:2025/)
 
 #### Front
 https://github.com/Cha-nu/Justick_front/edit/main/README.md
