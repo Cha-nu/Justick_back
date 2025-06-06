@@ -122,7 +122,7 @@ public class CabbagePredictService {
         );
 
         //21개 제한
-        return result.size() > 21 ? result.subList(0, 21) : result;
+        return result.size() > 28 ? result.subList(0, 28) : result;
     }
 
     @Transactional
