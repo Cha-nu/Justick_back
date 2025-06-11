@@ -65,11 +65,9 @@ public class PotatoPredictService {
                 ));
 
         int size = grouped.size();
-        int count = 14;
-        int exclude = 2;
+        int count = 15;
         return grouped.entrySet().stream()
-                .skip(Math.max(0, size - (count + exclude)))
-                .limit(count)
+                .skip(Math.max(0, size - count))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -112,8 +110,8 @@ public class PotatoPredictService {
         LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
 
         // 42일 전부터 21일 전까지의 데이터
-        LocalDate from = latestDate.minusDays(48);
-        LocalDate to = latestDate.minusDays(21);
+        LocalDate from = latestDate.minusDays(43);
+        LocalDate to = latestDate.minusDays(15);
 
         List<PotatoPredict> result = repo.findByDateRangeAndGrade(
                 from.getYear(), from.getMonthValue(), from.getDayOfMonth(),

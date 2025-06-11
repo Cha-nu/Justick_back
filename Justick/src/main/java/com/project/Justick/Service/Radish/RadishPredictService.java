@@ -64,8 +64,10 @@ public class RadishPredictService {
                         })
                 ));
 
+        int size = grouped.size();
+        int count = 15;
         return grouped.entrySet().stream()
-                .skip(Math.max(0, grouped.size() - 14))
+                .skip(Math.max(0, size - count))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -108,8 +110,8 @@ public class RadishPredictService {
         LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
 
         // 42일 전부터 21일 전까지의 데이터
-        LocalDate from = latestDate.minusDays(48);
-        LocalDate to = latestDate.minusDays(21);
+        LocalDate from = latestDate.minusDays(43);
+        LocalDate to = latestDate.minusDays(15);
 
         List<RadishPredict> result = repo.findByDateRangeAndGrade(
                 from.getYear(), from.getMonthValue(), from.getDayOfMonth(),
