@@ -13,17 +13,6 @@ public interface PotatoPredictRepository extends JpaRepository<PotatoPredict, Lo
 
     List<PotatoPredict> findByGrade(Grade grade);
 
-    @Query("SELECT c FROM PotatoPredict c WHERE c.grade = :grade ORDER BY c.year DESC, c.month DESC, c.day DESC LIMIT 1")
-    PotatoPredict findLatestByGrade(@Param("grade") Grade grade);
-
-    @Query("SELECT c FROM PotatoPredict c WHERE (c.year > :fromYear OR (c.year = :fromYear AND c.month > :fromMonth) OR (c.year = :fromYear AND c.month = :fromMonth AND c.day >= :fromDay)) " +
-            "AND (c.year < :toYear OR (c.year = :toYear AND c.month < :toMonth) OR (c.year = :toYear AND c.month = :toMonth AND c.day <= :toDay)) " +
-            "AND c.grade = :grade ORDER BY c.year, c.month, c.day")
-    List<PotatoPredict> findByDateRangeAndGrade(int fromYear, int fromMonth, int fromDay,
-                                                 int toYear, int toMonth, int toDay,
-                                                 Grade grade);
-
-
     @Query("SELECT COUNT(c) FROM PotatoPredict c WHERE c.grade = :grade")
     long countByGrade(@Param("grade") Grade grade);
 }

@@ -106,23 +106,23 @@ public class OnionPredictService {
     }
 
     public List<OnionPredict> findRecentDaysWithForecast(Grade grade) {
-        OnionPredict latest = repo.findLatestByGrade(grade);
-        if (latest == null) return List.of();
+        List<OnionPredict> all = repo.findByGrade(grade);
 
-        LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
+        // 날짜 내림차순(최신순) 정렬
+        all.sort(Comparator.comparing((OnionPredict p) ->
+                LocalDate.of(p.getYear(), p.getMonth(), p.getDay())
+        ).reversed());
 
-        // 42일 전부터 21일 전까지의 데이터
-        LocalDate from = latestDate.minusDays(43);
-        LocalDate to = latestDate.minusDays(15);
+        // 47개까지만 슬라이스
+        int limit = Math.min(48, all.size());
+        List<OnionPredict> latest47 = all.subList(0, limit);
 
-        List<OnionPredict> result = repo.findByDateRangeAndGrade(
-                from.getYear(), from.getMonthValue(), from.getDayOfMonth(),
-                to.getYear(), to.getMonthValue(), to.getDayOfMonth(),
-                grade
-        );
+        // 날짜 오름차순으로 다시 정렬
+        latest47.sort(Comparator.comparing(p ->
+                LocalDate.of(p.getYear(), p.getMonth(), p.getDay())
+        ));
 
-        //21개 제한
-        return result.size() > 28 ? result.subList(0, 28) : result;
+        return latest47.subList(0, 28);
     }
 
     @Transactional
