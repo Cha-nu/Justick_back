@@ -65,11 +65,9 @@ public class PotatoPredictService {
                 ));
 
         int size = grouped.size();
-        int count = 14;
-        int exclude = 2;
+        int count = 15;
         return grouped.entrySet().stream()
-                .skip(Math.max(0, size - (count + exclude)))
-                .limit(count)
+                .skip(Math.max(0, size - count))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -106,23 +104,23 @@ public class PotatoPredictService {
     }
 
     public List<PotatoPredict> findRecentDaysWithForecast(Grade grade) {
-        PotatoPredict latest = repo.findLatestByGrade(grade);
-        if (latest == null) return List.of();
+        List<PotatoPredict> all = repo.findByGrade(grade);
 
-        LocalDate latestDate = LocalDate.of(latest.getYear(), latest.getMonth(), latest.getDay());
+        // 날짜 내림차순(최신순) 정렬
+        all.sort(Comparator.comparing((PotatoPredict p) ->
+                LocalDate.of(p.getYear(), p.getMonth(), p.getDay())
+        ).reversed());
 
-        // 42일 전부터 21일 전까지의 데이터
-        LocalDate from = latestDate.minusDays(48);
-        LocalDate to = latestDate.minusDays(21);
+        // 47개까지만 슬라이스
+        int limit = Math.min(48, all.size());
+        List<PotatoPredict> latest47 = all.subList(0, limit);
 
-        List<PotatoPredict> result = repo.findByDateRangeAndGrade(
-                from.getYear(), from.getMonthValue(), from.getDayOfMonth(),
-                to.getYear(), to.getMonthValue(), to.getDayOfMonth(),
-                grade
-        );
+        // 날짜 오름차순으로 다시 정렬
+        latest47.sort(Comparator.comparing(p ->
+                LocalDate.of(p.getYear(), p.getMonth(), p.getDay())
+        ));
 
-        //21개 제한
-        return result.size() > 28 ? result.subList(0, 28) : result;
+        return latest47.subList(0, 28);
     }
 
     @Transactional
