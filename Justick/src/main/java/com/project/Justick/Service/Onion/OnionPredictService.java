@@ -114,7 +114,7 @@ public class OnionPredictService {
         ).reversed());
 
         // 47개까지만 슬라이스
-        int limit = Math.min(48, all.size());
+        int limit = Math.min(49, all.size());
         List<OnionPredict> latest47 = all.subList(0, limit);
 
         // 날짜 오름차순으로 다시 정렬
