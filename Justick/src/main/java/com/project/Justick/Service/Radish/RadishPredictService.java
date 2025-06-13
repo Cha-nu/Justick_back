@@ -65,7 +65,7 @@ public class RadishPredictService {
                 ));
 
         int size = grouped.size();
-        int count = 15;
+        int count = 16;
         return grouped.entrySet().stream()
                 .skip(Math.max(0, size - count))
                 .collect(Collectors.toMap(
