@@ -11,7 +11,7 @@ npm version: 11.1.0
 (http://justick.myvnc.com:2025/)
 
 #### Front
-https://github.com/Cha-nu/Justick_front/edit/main/README.md
+https://github.com/Cha-nu/Justick_front/
 
 #### AI
 https://github.com/wjyi0615/Justick_AI
