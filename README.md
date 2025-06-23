@@ -5,6 +5,9 @@ description: 캡스톤(2) 프로젝트
 #### version:  
 Oracle JAVA 21  
 
+#### 실행화면
+![image](https://github.com/user-attachments/assets/524a1118-1274-41f0-841b-b6d5d7123230)
+
 #### web url
 http://justick.iptime.org/
 
