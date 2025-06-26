@@ -3,62 +3,28 @@ package com.project.Justick.Service.Radish;
 import com.project.Justick.DTO.Radish.RadishRetailRequest;
 import com.project.Justick.Domain.Radish.RadishRetail;
 import com.project.Justick.Repository.Radish.RadishRetailRepository;
+import com.project.Justick.Service.AgriculturalRetailService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Service
-public class RadishRetailService {
+public class RadishRetailService extends AgriculturalRetailService<RadishRetail, RadishRetailRequest> {
 
-    private final RadishRetailRepository radishRetailRepository;
-
-    public RadishRetailService(RadishRetailRepository radishRetailRepository) {
-        this.radishRetailRepository = radishRetailRepository;
+    public RadishRetailService(RadishRetailRepository repo) {
+        super(repo);
     }
 
-    public List<RadishRetail> getAllRadishRetail() {
-        return radishRetailRepository.findAll();
-    }
-
-    public void addRadishRetail(RadishRetailRequest request) {
-        RadishRetail newData = toEntity(request);
-        List<RadishRetail> all = radishRetailRepository.findAll();
-
-        // 만약 데이터가 28개 이상이면 가장 오래된 1개 삭제
-        if (all.size() >= 28) {
-            RadishRetail oldest = all.stream()
-                    .min(Comparator.comparing(RadishRetail::getYear)
-                            .thenComparing(RadishRetail::getMonth)
-                            .thenComparing(RadishRetail::getDay))
-                    .orElse(null);
-
-            radishRetailRepository.delete(oldest);
-        }
-
-        radishRetailRepository.save(newData);
-    }
-
-    private RadishRetail toEntity(RadishRetailRequest request) {
+    @Override
+    protected RadishRetail toEntity(RadishRetailRequest req) {
         RadishRetail entity = new RadishRetail();
-        entity.setYear(request.getYear());
-        entity.setMonth(request.getMonth());
-        entity.setDay(request.getDay());
-        entity.setAveragePrice(request.getAveragePrice());
-        entity.setGap(request.getGap());
-        // 필요시 추가 필드 매핑
+        entity.setYear(req.getYear());
+        entity.setMonth(req.getMonth());
+        entity.setDay(req.getDay());
+        entity.setAveragePrice(req.getAveragePrice());
+        entity.setGap(req.getGap());
         return entity;
     }
 
-    @Transactional
-    public void saveAll(List<RadishRetailRequest> requests) {
-        List<RadishRetail> list = requests.stream().map(this::toEntity).toList();
-        radishRetailRepository.saveAll(list);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
-        radishRetailRepository.deleteById(id);
+    public void addRadishRetail(RadishRetailRequest request) {
+        saveWithLimit(request, 28);
     }
 }
